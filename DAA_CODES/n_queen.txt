@@ -1,0 +1,72 @@
+prevd = []
+prevc = []
+
+# Function to print solution 
+def printBoard(chess,N) :
+    for i in range(N):
+        for j in range(N):
+            print(chess[i][j],end=' ')
+        print()
+
+def isValid( chess, r, c, N) :	
+	# Check this column only upward 
+	if prevc[c] == 1: 
+		return False
+
+	# Check upper diagonal on right side 
+	if prevd[r+c][0] == 1: 
+		return False
+
+	# Check upper diagonal on left side 
+	if prevd[r-c+N-1][1] == 1: 
+		return False
+
+	return True
+
+# Recursive function for N-Queen Problem
+def recurNqueen( chess, r, N):
+	# if no queens are left to place
+	# we return true. 
+	if r >= N:
+		return True
+
+	for i in range(N):
+		# Check if placing queen to chess[r][i] is valid.
+		if isValid(chess, r, i, N) == True: 
+			# Place this queen in chess[r][i] 
+			chess[r][i] = 1
+			prevc[i] = 1	
+			prevd[r+i][0] = 1 
+prevd[r-i+N-1][1] = 1 
+
+			# move ahead for next row 
+			if recurNqueen(chess, r + 1, N):
+				return True
+
+			# Backtracking 
+			chess[r][i] = 0 
+			prevc[i] = 0	
+			prevd[r+i][0] = 0 
+			prevd[r-i+N-1][1] = 0 
+
+
+	# If the queen cannot be placed in any column for
+	# the given row we return false.
+	return False
+
+def NQueen():
+    N = 8
+	# creating chess board of NxN and initialising it with 0
+    chess = [[0 for i in range(N+1)] for j in range(N+1)]
+    prevd = [[0 for i in range(2*N)] for j in range(2)]
+	prevc = [0 for i in range(N+1)]
+
+	# initialising the recursive function from 0th row
+    if recurNqueen(chess, 0, N) == 0:
+		# if no solution exists the recursive function will end up 
+		# returning false.
+        print("Solution not found !!")
+        return
+
+    # else solution exists and printing out the solution*/
+    printBoard(chess, N)
